@@ -1,13 +1,19 @@
-# Distributed ProRes Proxies
+# ProRes Proxies
+
+## Singleton Processing
+
+See ``prores-proxies`` directory for README file.
+
+## Distributed Processing
 
 Uses gearman to create ProRes proxies using a series of distributed machines.
 
-## Requirements
+### Requirements
 
  * ffmpeg - Compiled with libx264 and prores support
  * golang - For compilation -- and for fun!
 
-## Building
+### Building
 
 ```
 go get -d
