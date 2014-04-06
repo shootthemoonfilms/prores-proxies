@@ -27,3 +27,11 @@ files will be processed.
 ```
 go build
 ```
+
+To cross-compile, make sure that you have installed and setup
+``golang-crosscompile`` first. Then run
+
+```
+make
+```
+
