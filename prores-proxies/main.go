@@ -10,7 +10,7 @@ import (
 )
 
 var (
-	ffmpegPath = flag.String("ffmpeg", "./ffmpeg", "Path to FFMPEG binary")
+	ffmpegPath = flag.String("ffmpeg", "."+string(os.PathSeparator)+"ffmpeg", "Path to FFMPEG binary")
 	proxyDir   = flag.String("proxy", "proxy", "Proxy files subdirectory name")
 )
 
