@@ -14,3 +14,16 @@ If no additional arguments are given, the current working directory will be
 processed, otherwise all listed directories will be scanned and all .mov
 files will be processed.
 
+## Dependencies
+
+ * [Go](http://golang.org) - for compilation
+ * ffmpeg - Binary required to execute. This should have libx264 support compiled in.
+   - [Windows ffmpeg binaries](http://ffmpeg.zeranoe.com/builds/)
+   - [ffmpeg source](https://github.com/FFmpeg/FFmpeg)
+ * [golang-crosscompile](https://github.com/davecheney/golang-crosscompile) - for cross-compiling for other platforms
+
+## Building
+
+```
+go build
+```
