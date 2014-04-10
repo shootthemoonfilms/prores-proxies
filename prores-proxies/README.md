@@ -8,11 +8,16 @@ Quick and dirty ffmpeg standalone proxy conversion.
 Usage of ./prores-proxies:
   -ffmpeg="./ffmpeg": Path to FFMPEG binary
   -proxy="proxy": Proxy files subdirectory name
+  -scaleh=0: Scale height
+  -scalew=0: Scale width
+
 ```
 
 If no additional arguments are given, the current working directory will be
 processed, otherwise all listed directories will be scanned and all .mov
 files will be processed.
+
+If scalew and scaleh are specified, the video will be rescaled to that size.
 
 ## Dependencies
 

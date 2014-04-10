@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
@@ -10,14 +11,23 @@ import (
 )
 
 var (
-	ffmpegPath = flag.String("ffmpeg", "."+string(os.PathSeparator)+"ffmpeg", "Path to FFMPEG binary")
-	proxyDir   = flag.String("proxy", "proxy", "Proxy files subdirectory name")
+	ffmpegPath       = flag.String("ffmpeg", "."+string(os.PathSeparator)+"ffmpeg", "Path to FFMPEG binary")
+	proxyDir         = flag.String("proxy", "proxy", "Proxy files subdirectory name")
+	scaleW           = flag.Int("scalew", 0, "Scale width")
+	scaleH           = flag.Int("scaleh", 0, "Scale height")
+	scalingParameter string
 )
 
 func main() {
 	flag.Parse()
 
 	args := flag.Args()
+
+	if *scaleW > 0 && *scaleH > 0 {
+		scalingParameter = fmt.Sprintf("-filter:v scale=%d:%d", *scaleW, *scaleH)
+	} else {
+		scalingParameter = ""
+	}
 
 	// Determine if we're using local directory or list of provided ones.
 	var dirs []string
@@ -56,17 +66,21 @@ func processFile(pathName, fileName string) {
 	log.Print("Processing " + fileName + " in '" + pathName + "'")
 	outPath := pathName + string(os.PathSeparator) + *proxyDir + string(os.PathSeparator) + fileName
 	_ = os.MkdirAll(pathName+string(os.PathSeparator)+*proxyDir, 0755)
+	args := []string{
+		"-y",
+		"-i", pathName + string(os.PathSeparator) + fileName,
+	}
+	if scalingParameter != "" {
+		args = append(args, scalingParameter)
+	}
+	args = append(args, "-vcodec", "libx264")
+	args = append(args, "-acodec", "aac")
+	args = append(args, "-strict", "-2")
+	args = append(args, "-preset", "ultrafast")
+	args = append(args, outPath)
 	command := exec.Cmd{
 		Path: *ffmpegPath,
-		Args: []string{
-			"-y",
-			"-i", pathName + string(os.PathSeparator) + fileName,
-			"-vcodec", "libx264",
-			"-acodec", "aac",
-			"-strict", "-2",
-			"-preset", "ultrafast",
-			outPath,
-		},
+		Args: args,
 	}
 	command.Stdout = os.Stdout
 	command.Stderr = os.Stderr
