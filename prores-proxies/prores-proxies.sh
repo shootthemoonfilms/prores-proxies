@@ -30,6 +30,8 @@ for i in $files; do
 			-y \
 			-i "$i" \
 			-vcodec libx264 -acodec aac -strict -2 -preset ultrafast \
+			-profile:v baseline -level 3.0 \
+			-pix_fmt yuv420p \
 			"${o}"
 		echo "$(date)| Completed proxy : $o"
 	else
