@@ -73,10 +73,19 @@ func processFile(pathName, fileName string) {
 	if scalingParameter != "" {
 		args = append(args, scalingParameter)
 	}
+
+	// Ultrafast x264+AAC
 	args = append(args, "-vcodec", "libx264")
 	args = append(args, "-acodec", "aac")
 	args = append(args, "-strict", "-2")
 	args = append(args, "-preset", "ultrafast")
+
+	// Baseline compatibility, all devices
+	args = append(args, "-profile:v", "baseline", "-level", "3.0")
+
+	// YUV 4:2:0
+	args = append(args, "-pix_fmt", "yuv420p")
+
 	args = append(args, outPath)
 	command := exec.Cmd{
 		Path: *ffmpegPath,
