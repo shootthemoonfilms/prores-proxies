@@ -6,3 +6,9 @@ type ProxyJob struct {
 	ResolutionW  int    `json:"w"`
 	ResolutionH  int    `json:"h"`
 }
+
+type ProxyJobResult struct {
+	Url   string `json:"base"`
+	Size  int64  `json:"size"`
+	Error string `json:"error"`
+}

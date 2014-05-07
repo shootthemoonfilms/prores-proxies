@@ -1,15 +1,13 @@
 package main
 
 import (
+	"io"
 	"net/http"
+	"os"
 )
 
 func GrabFile(urlBase string, originalFile string, outFile string) error {
-	req, err := http.NewRequest(urlBase+"/"+originalFile, url, nil)
-	if err != nil {
-		return err
-	}
-	res, err := s.client.Do(req)
+	res, err := http.Get(urlBase + "/" + originalFile)
 	if err != nil {
 		return err
 	}
@@ -18,7 +16,7 @@ func GrabFile(urlBase string, originalFile string, outFile string) error {
 	out, err := os.Create(outFile)
 	defer out.Close()
 
-	_, err := io.Copy(out, res.Body)
+	_, err = io.Copy(out, res.Body)
 
 	return err
 }
