@@ -15,6 +15,7 @@ var (
 	proxyDir         = flag.String("proxy", "proxy", "Proxy files subdirectory name")
 	scaleW           = flag.Int("scalew", 0, "Scale width")
 	scaleH           = flag.Int("scaleh", 0, "Scale height")
+	extension        = flag.String("extension", "mov", "File extension")
 	scalingParameter string
 )
 
@@ -101,6 +102,10 @@ func processFile(pathName, fileName string) {
 		log.Print(err.Error())
 		return
 	}
+
+	// If everything works, rename if necessary
+	modifiedFileName := strings.TrimRight(fileName, ".mov") + "." + *extension
+	os.Rename(outPath, pathName+string(os.PathSeparator)+*proxyDir+string(os.PathSeparator)+modifiedFileName)
 }
 
 // FileExists reports whether the named file exists.

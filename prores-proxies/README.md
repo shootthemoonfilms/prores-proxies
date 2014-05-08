@@ -6,11 +6,11 @@ Quick and dirty ffmpeg standalone proxy conversion.
 
 ```
 Usage of ./prores-proxies:
+  -extension="mov": File extension
   -ffmpeg="./ffmpeg": Path to FFMPEG binary
   -proxy="proxy": Proxy files subdirectory name
   -scaleh=0: Scale height
   -scalew=0: Scale width
-
 ```
 
 If no additional arguments are given, the current working directory will be
@@ -18,6 +18,12 @@ processed, otherwise all listed directories will be scanned and all .mov
 files will be processed.
 
 If scalew and scaleh are specified, the video will be rescaled to that size.
+
+If extension is specified, that extension will be used for output files. This
+can be useful when dealing with annoying hacks like Premiere not dealing with
+Quicktime MOV files properly when using the Quicktime decoder -- the
+workaround for which is to use ```.mpg``` as the file extension for the
+proxy files.
 
 ## Dependencies
 
