@@ -7,7 +7,9 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"runtime"
 	"strings"
+	"sync"
 )
 
 var (
@@ -16,7 +18,9 @@ var (
 	scaleW           = flag.Int("scalew", 0, "Scale width")
 	scaleH           = flag.Int("scaleh", 0, "Scale height")
 	extension        = flag.String("extension", "mov", "File extension")
+	threading        = flag.Bool("threading", false, "Use multi-threading")
 	scalingParameter string
+	wg               sync.WaitGroup
 )
 
 func main() {
@@ -28,6 +32,11 @@ func main() {
 		scalingParameter = fmt.Sprintf("-filter:v scale=%d:%d", *scaleW, *scaleH)
 	} else {
 		scalingParameter = ""
+	}
+
+	if *threading {
+		log.Print("Setting maximum parallelism")
+		runtime.GOMAXPROCS(MaxParallelism())
 	}
 
 	// Determine if we're using local directory or list of provided ones.
@@ -49,6 +58,12 @@ func main() {
 	for idx := range dirs {
 		scanDir(dirs[idx])
 	}
+
+	if *threading {
+		log.Print("Waiting for threads to finish")
+		wg.Wait()
+		log.Print("Run completed")
+	}
 }
 
 func scanDir(dirName string) {
@@ -58,12 +73,20 @@ func scanDir(dirName string) {
 		fullPath := dirName + string(os.PathSeparator) + f.Name()
 		if FileExists(fullPath) && strings.HasSuffix(f.Name(), ".mov") {
 			log.Print("Processing " + f.Name())
-			processFile(dirName, f.Name())
+			if *threading {
+				wg.Add(1)
+				go processFile(dirName, f.Name())
+			} else {
+				processFile(dirName, f.Name())
+			}
 		}
 	}
 }
 
 func processFile(pathName, fileName string) {
+	if *threading {
+		defer wg.Done()
+	}
 	log.Print("Processing " + fileName + " in '" + pathName + "'")
 	outPath := pathName + string(os.PathSeparator) + *proxyDir + string(os.PathSeparator) + fileName
 	_ = os.MkdirAll(pathName+string(os.PathSeparator)+*proxyDir, 0755)
@@ -120,4 +143,13 @@ func FileExists(name string) bool {
 		return false
 	}
 	return true
+}
+
+func MaxParallelism() int {
+	maxProcs := runtime.GOMAXPROCS(0)
+	numCPU := runtime.NumCPU()
+	if maxProcs < numCPU {
+		return maxProcs
+	}
+	return numCPU
 }

@@ -11,6 +11,7 @@ Usage of ./prores-proxies:
   -proxy="proxy": Proxy files subdirectory name
   -scaleh=0: Scale height
   -scalew=0: Scale width
+  -threading=false: Use multi-threading
 ```
 
 If no additional arguments are given, the current working directory will be
@@ -24,6 +25,9 @@ can be useful when dealing with annoying hacks like Premiere not dealing with
 Quicktime MOV files properly when using the Quicktime decoder -- the
 workaround for which is to use ```.mpg``` as the file extension for the
 proxy files.
+
+The threading option allows parallelism (more than one file to be encoded
+at once). It is disabled by default.
 
 ## Dependencies
 
