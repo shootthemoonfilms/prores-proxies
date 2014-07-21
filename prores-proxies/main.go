@@ -18,6 +18,7 @@ var (
 	scaleW           = flag.Int("scalew", 0, "Scale width")
 	scaleH           = flag.Int("scaleh", 0, "Scale height")
 	extension        = flag.String("extension", "mov", "File extension")
+	formatExtension  = flag.String("format-extension", "mov", "File extension used for determining format")
 	threading        = flag.Bool("threading", false, "Use multi-threading")
 	scalingParameter string
 	wg               sync.WaitGroup
@@ -71,7 +72,7 @@ func scanDir(dirName string) {
 	for _, f := range files {
 		//log.Print(f.Name())
 		fullPath := dirName + string(os.PathSeparator) + f.Name()
-		if FileExists(fullPath) && strings.HasSuffix(f.Name(), ".mov") {
+		if FileExists(fullPath) && strings.HasSuffix(f.Name(), "."+*formatExtension) {
 			log.Print("Processing " + f.Name())
 			if *threading {
 				wg.Add(1)
@@ -127,8 +128,10 @@ func processFile(pathName, fileName string) {
 	}
 
 	// If everything works, rename if necessary
-	modifiedFileName := strings.TrimRight(fileName, ".mov") + "." + *extension
-	os.Rename(outPath, pathName+string(os.PathSeparator)+*proxyDir+string(os.PathSeparator)+modifiedFileName)
+	if *formatExtension != *extension {
+		modifiedFileName := strings.TrimRight(fileName, "."+*formatExtension) + "." + *extension
+		os.Rename(outPath, pathName+string(os.PathSeparator)+*proxyDir+string(os.PathSeparator)+modifiedFileName)
+	}
 }
 
 // FileExists reports whether the named file exists.

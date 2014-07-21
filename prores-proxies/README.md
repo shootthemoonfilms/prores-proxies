@@ -8,6 +8,7 @@ Quick and dirty ffmpeg standalone proxy conversion.
 Usage of ./prores-proxies:
   -extension="mov": File extension
   -ffmpeg="./ffmpeg": Path to FFMPEG binary
+  -format-extension="mov": File extension used for determining format
   -proxy="proxy": Proxy files subdirectory name
   -scaleh=0: Scale height
   -scalew=0: Scale width
