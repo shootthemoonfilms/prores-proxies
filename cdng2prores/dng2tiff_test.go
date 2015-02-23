@@ -6,11 +6,12 @@ import (
 )
 
 const (
-	testFrame = "testframes/Blackmagic Pocket Cinema Camera_1_2013-11-15_1740_C0000_000545.dng"
+	testFrame = "testframes/000545.dng"
 )
 
 func BenchmarkNonNative(b *testing.B) {
-	err := DngToTiff(testFrame, "non-native.tiff")
+	*dcrawPath = "/usr/bin/dcraw" // HACK! HACK!
+	err := DngToTiff(testFrame, "frame.tiff")
 	//defer os.Remove("non-native.tiff")
 	if err != nil {
 		b.Log(err)
@@ -18,7 +19,9 @@ func BenchmarkNonNative(b *testing.B) {
 	}
 }
 
+/*
 func BenchmarkNative(b *testing.B) {
+	*dcrawPath = "/usr/bin/dcraw"
 	err := DngToTiffNative(testFrame, "native.tiff")
 	//defer os.Remove("native.tiff")
 	if err != nil {
@@ -26,4 +29,4 @@ func BenchmarkNative(b *testing.B) {
 		b.Fail()
 	}
 }
-
+*/

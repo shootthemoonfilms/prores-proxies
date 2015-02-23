@@ -8,7 +8,7 @@ import (
 	"os/exec"
 )
 
-// DngToTiff handles the conversion process using dcraw and pnmtotiff
+// DngToTiff handles the conversion process using dcraw
 func DngToTiff(in, out string) error {
 	w, err := os.Create(out)
 	if err != nil {
@@ -16,17 +16,13 @@ func DngToTiff(in, out string) error {
 	}
 	defer w.Close()
 
-	c1 := exec.Command(*dcrawPath, "-c", "-q", "0", in)
-	c2 := exec.Command(*pnmtotiffPath, "-quiet", "-lzw")
-	c2.Stdin, err = c1.StdoutPipe()
+	c1 := exec.Command(*dcrawPath, "-c", "-q", "0", "-T", in)
+	c1.Stdout = w
+	err = c1.Start()
 	if err != nil {
 		return err
 	}
-	c2.Stdout = w
-
-	c2.Start()
-	c1.Run()
-	c2.Wait()
+	c1.Wait()
 
 	return nil
 }
@@ -48,7 +44,10 @@ func DngToTiffNative(in, out string) error {
 		return err
 	}
 
-	c1.Start()
+	err = c1.Start()
+	if err != nil {
+		return err
+	}
 	c1.Wait()
 
 	img, err := pnm.Decode(p)
@@ -56,8 +55,8 @@ func DngToTiffNative(in, out string) error {
 		return err
 	}
 	err = tiff.Encode(w, img, &tiff.Options{
-		//Compression: tiff.Deflate,
-		//Predictor:   true,
+		Compression: tiff.Deflate,
+		Predictor:   true,
 	})
 	if err != nil {
 		return err
