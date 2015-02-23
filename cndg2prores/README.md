@@ -1,11 +1,11 @@
-# raw2prores
+# cdng2prores
 
-Quick and dirty dcraw/ffmpeg standalone RAW to prores proxy conversion.
+Quick and dirty dcraw/ffmpeg standalone CinemaDNG to prores proxy conversion.
 
 ## Usage
 
 ```
-Usage of ./raw2prores:
+Usage of ./cdng2prores:
   -dcraw="./dcraw": Path to DCRAW binary
   -extension="mov": File extension
   -ffmpeg="./ffmpeg": Path to FFMPEG binary
@@ -34,9 +34,11 @@ at once). It is disabled by default.
 ## Dependencies
 
  * [Go](http://golang.org) - for compilation
- * ffmpeg - Binary required to execute. This should have libx264 support compiled in.
+ * ffmpeg - Binary required to execute. This should have prores support compiled in.
    - [Windows ffmpeg binaries](http://ffmpeg.zeranoe.com/builds/)
    - [ffmpeg source](https://github.com/FFmpeg/FFmpeg)
+ * dcraw - Requred for RAW frame to PPM conversion
+ * ppmtotiff - Required for PPM to TIFF conversion
  * [golang-crosscompile](https://github.com/davecheney/golang-crosscompile) - for cross-compiling for other platforms
 
 ## Building
