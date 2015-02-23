@@ -3,6 +3,7 @@ package main
 import (
 	pnm "github.com/jbuchbinder/gopnm"
 	tiff "golang.org/x/image/tiff"
+	//"log"
 	"os"
 	"os/exec"
 )
@@ -19,7 +20,7 @@ func DngToTiff(in, out string) error {
 	c2 := exec.Command(*pnmtotiffPath, "-quiet", "-lzw")
 	c2.Stdin, err = c1.StdoutPipe()
 	if err != nil {
-		return nil
+		return err
 	}
 	c2.Stdout = w
 
@@ -40,7 +41,6 @@ func DngToTiffNative(in, out string) error {
 	defer w.Close()
 
 	c1 := exec.Command(*dcrawPath, "-c", "-q", "0", in)
-	c1.Stdout = w
 
 	// Grab dcraw output
 	p, err := c1.StdoutPipe()
@@ -56,8 +56,8 @@ func DngToTiffNative(in, out string) error {
 		return err
 	}
 	err = tiff.Encode(w, img, &tiff.Options{
-		Compression: tiff.Deflate,
-		Predictor:   true,
+		//Compression: tiff.Deflate,
+		//Predictor:   true,
 	})
 	if err != nil {
 		return err
