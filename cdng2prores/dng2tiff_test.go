@@ -1,22 +1,42 @@
 package main
 
 import (
-	// "os"
+	"os"
+	"sync"
 	"testing"
 )
 
-const (
-	testFrame = "testframes/000545.dng"
+var (
+	testFrames = []string{
+		"testframes/000545.dng",
+		"testframes/000546.dng",
+		"testframes/000547.dng",
+		"testframes/000548.dng",
+	}
 )
 
 func BenchmarkNonNative(b *testing.B) {
 	*dcrawPath = "/usr/bin/dcraw" // HACK! HACK!
-	err := DngToTiff(testFrame, "frame.tiff")
-	//defer os.Remove("non-native.tiff")
-	if err != nil {
-		b.Log(err)
-		b.Fail()
+
+	var wg sync.WaitGroup
+
+	b.Logf("Spinning up %d frames", len(testFrames))
+	for i := 0; i < len(testFrames); i++ {
+		wg.Add(1)
+		go func(testFrame string) {
+			b.Log("Spinning up thread to process " + testFrame)
+			defer wg.Done()
+			err := DngToTiff(testFrame, testFrame +".tiff")
+			defer os.Remove(testFrame + ".tiff")
+			if err != nil {
+				b.Log(err)
+				//b.Fail()
+			}
+		}(testFrames[i])
 	}
+
+	b.Log("Waiting for threads to finish executing")
+	wg.Wait()
 }
 
 /*
