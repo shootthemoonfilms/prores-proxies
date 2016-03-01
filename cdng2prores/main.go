@@ -21,6 +21,7 @@ var (
 	scaleH           = flag.Int("scaleh", 0, "Scale height")
 	extension        = flag.String("extension", "mov", "File extension")
 	formatExtension  = flag.String("format-extension", "mov", "File extension used for determining format")
+	frameRate        = flag.String("framerate", "23.97", "Frames per second")
 	scalingParameter string
 	wg               sync.WaitGroup
 )
@@ -29,6 +30,17 @@ func main() {
 	flag.Parse()
 
 	args := flag.Args()
+
+	switch *frameRate {
+	case "30":
+	case "29.97":
+	case "25":
+	case "24":
+	case "23.97":
+		break
+	default:
+		panic("Invalid frame rate specified")
+	}
 
 	if *scaleW > 0 && *scaleH > 0 {
 		scalingParameter = fmt.Sprintf("-filter:v scale=%d:%d", *scaleW, *scaleH)
@@ -99,7 +111,7 @@ func processFile(pathName, fileName string) {
 	args = append(args, "-start_number", fmt.Sprintf("%d", startNumber))
 
 	// Specify frame rate
-	args = append(args, "-r", "23.97") // TODO: allow specifying this
+	args = append(args, "-r", *frameRate)
 
 	// Ultrafast x264+AAC
 	args = append(args, "-vcodec", "prores")

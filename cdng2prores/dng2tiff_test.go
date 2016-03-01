@@ -26,7 +26,7 @@ func BenchmarkNonNative(b *testing.B) {
 		go func(testFrame string) {
 			b.Log("Spinning up thread to process " + testFrame)
 			defer wg.Done()
-			err := DngToTiff(testFrame, testFrame +".tiff")
+			err := DngToTiff(testFrame, testFrame+".tiff")
 			defer os.Remove(testFrame + ".tiff")
 			if err != nil {
 				b.Log(err)

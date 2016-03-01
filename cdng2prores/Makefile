@@ -1,6 +1,6 @@
 NAME    := prores-proxies
 GO      := /opt/go
-VERSION := v0.1
+VERSION := v0.2
 SUFFIX  := $(VERSION).
 
 all: clean build
